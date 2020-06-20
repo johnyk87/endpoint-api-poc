@@ -1,6 +1,5 @@
 ﻿namespace API
 {
-    using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -17,10 +16,8 @@
                     services.ConfigureServices(webHostBuilderContext);
                 });
 
-                webHostBuilder.Configure((webHostBuilderContext, applicationBuilder) =>
-                {
-                    applicationBuilder.ConfigurePipeline(webHostBuilderContext);
-                });
+                // ASP.NET Core's GenericWebHostService requires a target application builder action
+                webHostBuilder.Configure(_ => { });
             });
         }
 
@@ -43,34 +40,10 @@
                 options.DocInclusionPredicate((_, __) => true);
             });
 
+            // Any registered IStartupFilter will be run before the target application builder
+            services.AddSingleton<IStartupFilter, StartupFilter>();
+
             return services;
-        }
-
-        private static IApplicationBuilder ConfigurePipeline(
-            this IApplicationBuilder applicationBuilder,
-            WebHostBuilderContext webHostBuilderContext)
-        {
-            if (webHostBuilderContext.HostingEnvironment.IsDevelopment())
-            {
-                applicationBuilder.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                applicationBuilder.UseHsts();
-            }
-
-            applicationBuilder.UseSwagger();
-
-            applicationBuilder.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/api-spec/swagger.json", "Endpoint API");
-            });
-
-            applicationBuilder.UseRouting();
-
-            applicationBuilder.UseEndpoints(endpoints => endpoints.MapControllers());
-
-            return applicationBuilder;
         }
     }
 }
