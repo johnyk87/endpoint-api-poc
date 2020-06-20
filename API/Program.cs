@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-
-namespace API
+﻿namespace API
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Hosting;
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+    public static class Program
+    {
+        public static Task Main(string[] args) =>
+            CreateHostBuilder(args).Build().RunAsync();
+
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(builder =>
+                {
+                    builder.UseStartup<Startup>();
+                });
     }
 }

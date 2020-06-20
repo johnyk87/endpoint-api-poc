@@ -10,12 +10,16 @@
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        private readonly IConfiguration configuration;
+        private readonly IHostEnvironment environment;
 
-        public IConfiguration Configuration { get; }
+        public Startup(
+            IConfiguration configuration,
+            IHostEnvironment environment)
+        {
+            this.configuration = configuration;
+            this.environment = environment;
+        }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -37,9 +41,9 @@
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (this.environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
