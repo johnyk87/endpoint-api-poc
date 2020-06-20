@@ -1,7 +1,8 @@
 ﻿namespace API
 {
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Hosting;
+    using API.Repositories;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
 
     public static class Program
@@ -11,9 +12,10 @@
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(builder =>
+                .ConfigureServices((hostBuilderContext, services) =>
                 {
-                    builder.UseStartup<Startup>();
-                });
+                    services.AddSingleton<IValueRepository, ValueRepository>();
+                })
+                .ConfigureWebHost();
     }
 }
