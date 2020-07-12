@@ -1,9 +1,10 @@
 ﻿namespace API
 {
     using System.Threading.Tasks;
-    using API.Repositories;
+    using API.Bootstrap;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.AspNetCore.Hosting;
 
     public static class Program
     {
@@ -12,10 +13,12 @@
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureServices((hostBuilderContext, services) =>
+                .ConfigureWebHostDefaults(builder =>
                 {
-                    services.AddSingleton<IValueRepository, ValueRepository>();
-                })
-                .ConfigureWebHost();
+                    builder.ConfigureServices(services => services.ConfigureServices());
+
+                    // ASP.NET Core's GenericWebHostService requires a target application builder action
+                    builder.Configure(_ => { });
+                });
     }
 }
